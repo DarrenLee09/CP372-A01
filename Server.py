@@ -23,19 +23,14 @@ def handle_client(client_socket, client_address, client_name):
         'start_time': connection_start_time,
         'end_time': None
     }
-    
 
     client_socket.send(f"Your name is {client_name}".encode())
 
     while True:
-
         data = client_socket.recv(1024).decode()
         if not data:
             break
-
         print(f"Received from {client_name}: {data}")
-        
-
         if data.lower() == "status":
             status_message = "Connected clients:\n"
             for name, info in clients.items():
@@ -58,11 +53,9 @@ def handle_client(client_socket, client_address, client_name):
             except Exception as e:
                 client_socket.send(f"Error listing files: {str(e)}".encode())
         
-
         elif data.startswith("get"):
             filename = data.split(" ", 1)[1]
             file_path = os.path.join(FILE_REPOSITORY, filename)
-            
             if os.path.isfile(file_path):
                 client_socket.send(f"Streaming file: {filename}".encode())
                 with open(file_path, 'rb') as file:
@@ -74,7 +67,6 @@ def handle_client(client_socket, client_address, client_name):
         
         else:
             client_socket.send(f"ACK: {data}".encode())
-
     client_socket.close()
     print(f"{client_name} disconnected")
 
@@ -83,9 +75,7 @@ def start_server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((SERVER_IP, SERVER_PORT))
     server_socket.listen(MAX_CLIENTS)
-    
     print(f"Server started on {SERVER_IP}:{SERVER_PORT}. Waiting for clients...")
-
     while True:
         if client_count < MAX_CLIENTS:
             client_socket, client_address = server_socket.accept()
